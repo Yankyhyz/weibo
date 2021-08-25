@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>@yield('title', 'Weibo App') - Laravel 入门教程</title>
-    <link rel="stylesheet" href="/css/app.css">
-  </head>
+    <link rel="stylesheet" href="{{mix('css/app.css')}}">
+  </head>{
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container"> <a class="navbar-brand" href="/">Weibo App</a>
