@@ -33,10 +33,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    
+
     public static function boot(){
         parent::boot();
-        
+
         static::creating(function ($user){
             $user->activation_token=Str::random(10);
         });
@@ -57,12 +57,39 @@ class User extends Authenticatable
         return "https://gravatar.zeruns.tech/avatar/$hash?s=$size";
         // return "http://www.gravatar.com/avatar/$hash?s=$size";
     }
-    
+
     public function statuses(){
         return $this->hasMany(Status::class);
     }
-    
+
     public function feed(){
         return $this->statuses()->orderBy('created_at','desc');
+    }
+
+    public function followers(){
+        return $this->belongsToMany(User::class,'followers','user_id','follower_id');
+    }
+
+    public function followings(){
+        return $this->belongsToMany(User::class,'followers','follower_id','user_id');
+    }
+
+    public function follow($user_ids){
+        if(!is_array($user_ids)){
+            $user_ids=compact('user_ids');
+        }
+        $this->followings()->sync($user_ids,false);
+    }
+
+    public function unfollow($user_ids){
+        if(!is_array($user_ids)){
+            $user_ids=compact('user_ids');
+        }
+        $this->followings()->detach($user_ids,false);
+    }
+    
+    public function isFollowing($user_ids){
+       
+       return $this->followings->contains($user_ids);
     }
 }
